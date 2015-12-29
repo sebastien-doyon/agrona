@@ -31,12 +31,12 @@ import static uk.co.real_logic.agrona.concurrent.broadcast.RecordDescriptor.*;
 public class BroadcastTransmitter
 {
     private final AtomicBuffer buffer;
-    private final int capacity;
-    private final int mask;
-    private final int maxMsgLength;
-    private final int tailIntentCountIndex;
-    private final int tailCounterIndex;
-    private final int latestCounterIndex;
+    private final long capacity;
+    private final long mask;
+    private final long maxMsgLength;
+    private final long tailIntentCountIndex;
+    private final long tailCounterIndex;
+    private final long latestCounterIndex;
 
     /**
      * Construct a new broadcast transmitter based on an underlying {@link uk.co.real_logic.agrona.concurrent.AtomicBuffer}.

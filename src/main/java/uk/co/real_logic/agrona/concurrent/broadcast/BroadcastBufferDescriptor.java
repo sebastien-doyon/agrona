@@ -55,7 +55,7 @@ public class BroadcastBufferDescriptor
      * @param capacity to be checked.
      * @throws IllegalStateException if the buffer capacity is not a power of 2.
      */
-    public static void checkCapacity(final int capacity)
+    public static void checkCapacity(final long capacity)
     {
         if (!BitUtil.isPowerOfTwo(capacity))
         {

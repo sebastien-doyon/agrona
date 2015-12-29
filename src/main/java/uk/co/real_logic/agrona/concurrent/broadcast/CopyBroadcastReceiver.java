@@ -66,8 +66,8 @@ public class CopyBroadcastReceiver
                 throw new IllegalStateException("Unable to keep up with broadcast buffer");
             }
 
-            final int length = receiver.length();
-            final int capacity = scratchBuffer.capacity();
+            final long length = receiver.length();
+            final long capacity = scratchBuffer.capacity();
             if (length > capacity)
             {
                 throw new IllegalStateException(String.format("Buffer required size %d but only has %d", length, capacity));

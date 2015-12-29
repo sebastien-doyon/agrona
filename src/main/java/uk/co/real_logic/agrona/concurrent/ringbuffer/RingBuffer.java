@@ -29,7 +29,7 @@ public interface RingBuffer
      *
      * @return the capacity of the ring-buffer in bytes for exchange.
      */
-    int capacity();
+    long capacity();
 
     /**
      * Non-blocking write of an message to an underlying ring-buffer.
@@ -65,7 +65,7 @@ public interface RingBuffer
      *
      * @return the maximum message length in bytes supported by the underlying ring buffer.
      */
-    int maxMsgLength();
+    long maxMsgLength();
 
     /**
      * Get the next value that can be used for a correlation id on an message when a response needs to be correlated.

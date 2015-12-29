@@ -27,7 +27,7 @@ public class DirectBufferInputStream extends InputStream
 {
     private DirectBuffer buffer;
     private int offset;
-    private int length;
+    private long length;
     private int position;
 
     public DirectBufferInputStream()
@@ -39,7 +39,7 @@ public class DirectBufferInputStream extends InputStream
         wrap(buffer, 0, buffer.capacity());
     }
 
-    public DirectBufferInputStream(final DirectBuffer buffer, final int offset, final int length)
+    public DirectBufferInputStream(final DirectBuffer buffer, final int offset, final long length)
     {
         wrap(buffer, offset, length);
     }
@@ -49,7 +49,7 @@ public class DirectBufferInputStream extends InputStream
         wrap(buffer, 0, buffer.capacity());
     }
 
-    public void wrap(final DirectBuffer buffer, final int offset, final int length)
+    public void wrap(final DirectBuffer buffer, final int offset, final long length)
     {
         if (null == buffer)
         {
@@ -99,7 +99,7 @@ public class DirectBufferInputStream extends InputStream
 
     public int available() throws IOException
     {
-        return length - position;
+        return (int) (length - position);
     }
 
     public long skip(final long n) throws IOException

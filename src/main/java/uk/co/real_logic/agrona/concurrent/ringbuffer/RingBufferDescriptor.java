@@ -70,7 +70,7 @@ public class RingBufferDescriptor
      * @param capacity to be checked.
      * @throws IllegalStateException if the buffer capacity is incorrect.
      */
-    public static void checkCapacity(final int capacity)
+    public static void checkCapacity(final long capacity)
     {
         if (!BitUtil.isPowerOfTwo(capacity - TRAILER_LENGTH))
         {
