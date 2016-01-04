@@ -30,7 +30,7 @@ public interface MutableDirectBuffer extends DirectBuffer
      * @param length of the run of bytes to set.
      * @param value  the memory will be set to.
      */
-    void setMemory(long index, int length, byte value);
+    void setMemory(long index, long length, byte value);
 
     /**
      * Put a value to a given index.

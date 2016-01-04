@@ -269,7 +269,7 @@ public class UnsafeBuffer implements AtomicBuffer
         return byteBuffer;
     }
 
-    public void setMemory(final long index, final int length, final byte value)
+    public void setMemory(final long index, final long length, final byte value)
     {
         if (SHOULD_BOUNDS_CHECK)
         {

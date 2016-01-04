@@ -41,7 +41,7 @@ public interface RingBuffer
      * @return true if written to the ring-buffer, or false if insufficient space exists.
      * @throws IllegalArgumentException if the length is greater than {@link RingBuffer#maxMsgLength()}
      */
-    boolean write(int msgTypeId, DirectBuffer srcBuffer, int srcIndex, int length);
+    boolean write(int msgTypeId, DirectBuffer srcBuffer, long srcIndex, long length);
 
     /**
      * Read as many messages as are available from the ring buffer.

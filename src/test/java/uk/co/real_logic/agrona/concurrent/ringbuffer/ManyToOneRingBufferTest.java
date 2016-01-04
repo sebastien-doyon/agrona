@@ -32,11 +32,11 @@ import static uk.co.real_logic.agrona.concurrent.ringbuffer.RecordDescriptor.*;
 public class ManyToOneRingBufferTest
 {
     private static final int MSG_TYPE_ID = 7;
-    private static final int CAPACITY = 4096;
-    private static final int TOTAL_BUFFER_LENGTH = CAPACITY + RingBufferDescriptor.TRAILER_LENGTH;
-    private static final int TAIL_COUNTER_INDEX = CAPACITY + RingBufferDescriptor.TAIL_POSITION_OFFSET;
-    private static final int HEAD_COUNTER_INDEX = CAPACITY + RingBufferDescriptor.HEAD_POSITION_OFFSET;
-    private static final int HEAD_COUNTER_CACHE_INDEX = CAPACITY + RingBufferDescriptor.HEAD_CACHE_POSITION_OFFSET;
+    private static final long CAPACITY = 4096;
+    private static final long TOTAL_BUFFER_LENGTH = CAPACITY + RingBufferDescriptor.TRAILER_LENGTH;
+    private static final long TAIL_COUNTER_INDEX = CAPACITY + RingBufferDescriptor.TAIL_POSITION_OFFSET;
+    private static final long HEAD_COUNTER_INDEX = CAPACITY + RingBufferDescriptor.HEAD_POSITION_OFFSET;
+    private static final long HEAD_COUNTER_CACHE_INDEX = CAPACITY + RingBufferDescriptor.HEAD_CACHE_POSITION_OFFSET;
 
     private final UnsafeBuffer buffer = mock(UnsafeBuffer.class);
     private ManyToOneRingBuffer ringBuffer;
@@ -52,9 +52,9 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldWriteToEmptyBuffer()
     {
-        final int length = 8;
-        final int recordLength = length + HEADER_LENGTH;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long length = 8;
+        final long recordLength = length + HEADER_LENGTH;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = 0L;
         final long head = 0L;
 
@@ -70,13 +70,13 @@ public class ManyToOneRingBufferTest
         final InOrder inOrder = inOrder(buffer);
         inOrder.verify(buffer).putLongOrdered((int)tail, makeHeader(-recordLength, MSG_TYPE_ID));
         inOrder.verify(buffer).putBytes(encodedMsgOffset((int)tail), srcBuffer, srcIndex, length);
-        inOrder.verify(buffer).putIntOrdered(lengthOffset((int)tail), recordLength);
+        inOrder.verify(buffer).putLongOrdered(lengthOffset((int)tail), recordLength);
     }
 
     @Test
     public void shouldRejectWriteWhenInsufficientSpace()
     {
-        final int length = 200;
+        final long length = 200;
         final long head = 0L;
         final long tail = head + (CAPACITY - align(length - ALIGNMENT, ALIGNMENT));
 
@@ -97,7 +97,7 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldRejectWriteWhenBufferFull()
     {
-        final int length = 8;
+        final long length = 8;
         final long head = 0L;
         final long tail = head + CAPACITY;
 
@@ -117,9 +117,9 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldInsertPaddingRecordPlusMessageOnBufferWrap()
     {
-        final int length = 200;
-        final int recordLength = length + HEADER_LENGTH;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long length = 200;
+        final long recordLength = length + HEADER_LENGTH;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = CAPACITY - HEADER_LENGTH;
         final long head = tail - (ALIGNMENT * 4);
 
@@ -137,15 +137,15 @@ public class ManyToOneRingBufferTest
 
         inOrder.verify(buffer).putLongOrdered(0, makeHeader(-recordLength, MSG_TYPE_ID));
         inOrder.verify(buffer).putBytes(encodedMsgOffset(0), srcBuffer, srcIndex, length);
-        inOrder.verify(buffer).putIntOrdered(lengthOffset(0), recordLength);
+        inOrder.verify(buffer).putLongOrdered(lengthOffset(0), recordLength);
     }
 
     @Test
     public void shouldInsertPaddingRecordPlusMessageOnBufferWrapWithHeadEqualToTail()
     {
-        final int length = 200;
-        final int recordLength = length + HEADER_LENGTH;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long length = 200;
+        final long recordLength = length + HEADER_LENGTH;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = CAPACITY - HEADER_LENGTH;
         final long head = tail;
 
@@ -163,7 +163,7 @@ public class ManyToOneRingBufferTest
 
         inOrder.verify(buffer).putLongOrdered(0, makeHeader(-recordLength, MSG_TYPE_ID));
         inOrder.verify(buffer).putBytes(encodedMsgOffset(0), srcBuffer, srcIndex, length);
-        inOrder.verify(buffer).putIntOrdered(lengthOffset(0), recordLength);
+        inOrder.verify(buffer).putLongOrdered(lengthOffset(0), recordLength);
     }
 
     @Test
@@ -183,7 +183,7 @@ public class ManyToOneRingBufferTest
     public void shouldNotReadSingleMessagePartWayThroughWriting()
     {
         final long head = 0L;
-        final int headIndex = (int)head;
+        final long headIndex = head;
 
         when(buffer.getLong(HEAD_COUNTER_INDEX)).thenReturn(head);
         when(buffer.getIntVolatile(lengthOffset(headIndex))).thenReturn(0);
@@ -204,12 +204,12 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldReadTwoMessages()
     {
-        final int msgLength = 16;
-        final int recordLength = HEADER_LENGTH + msgLength;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long msgLength = 16;
+        final long recordLength = HEADER_LENGTH + msgLength;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = alignedRecordLength * 2;
         final long head = 0L;
-        final int headIndex = (int)head;
+        final long headIndex = head;
 
         when(buffer.getLong(HEAD_COUNTER_INDEX)).thenReturn(head);
         when(buffer.getLongVolatile(headIndex)).thenReturn(makeHeader(recordLength, MSG_TYPE_ID));
@@ -230,11 +230,11 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldLimitReadOfMessages()
     {
-        final int msgLength = 16;
-        final int recordLength = HEADER_LENGTH + msgLength;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long msgLength = 16;
+        final long recordLength = HEADER_LENGTH + msgLength;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long head = 0L;
-        final int headIndex = (int)head;
+        final long headIndex = head;
 
         when(buffer.getLong(HEAD_COUNTER_INDEX)).thenReturn(head);
         when(buffer.getLongVolatile(headIndex)).thenReturn(makeHeader(recordLength, MSG_TYPE_ID));
@@ -255,12 +255,12 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldCopeWithExceptionFromHandler()
     {
-        final int msgLength = 16;
-        final int recordLength = HEADER_LENGTH + msgLength;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long msgLength = 16;
+        final long recordLength = HEADER_LENGTH + msgLength;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = alignedRecordLength * 2;
         final long head = 0L;
-        final int headIndex = (int)head;
+        final long headIndex = head;
 
         when(buffer.getLong(HEAD_COUNTER_INDEX)).thenReturn(head);
         when(buffer.getLongVolatile(headIndex)).thenReturn(makeHeader(recordLength, MSG_TYPE_ID));
@@ -308,10 +308,10 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldUnblockMessageWithHeader()
     {
-        final int messageLength = ALIGNMENT * 4;
-        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn((long)messageLength);
-        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn((long)messageLength * 2);
-        when(buffer.getIntVolatile(messageLength)).thenReturn(-messageLength);
+        final long messageLength = ALIGNMENT * 4;
+        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn(messageLength);
+        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(messageLength * 2);
+        when(buffer.getLongVolatile(messageLength)).thenReturn(-messageLength);
 
         assertTrue(ringBuffer.unblock());
 
@@ -321,10 +321,10 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldUnblockGapWithZeros()
     {
-        final int messageLength = ALIGNMENT * 4;
-        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn((long)messageLength);
-        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn((long)messageLength * 3);
-        when(buffer.getIntVolatile(messageLength * 2)).thenReturn(messageLength);
+        final long messageLength = ALIGNMENT * 4;
+        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn(messageLength);
+        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(messageLength * 3);
+        when(buffer.getLongVolatile(messageLength * 2)).thenReturn(messageLength);
 
         assertTrue(ringBuffer.unblock());
 
@@ -334,10 +334,10 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldNotUnblockGapWithMessageRaceOnSecondMessageIncreasingTailThenInterrupting()
     {
-        final int messageLength = ALIGNMENT * 4;
-        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn((long)messageLength);
-        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn((long)messageLength * 3);
-        when(buffer.getIntVolatile(messageLength * 2)).thenReturn(0).thenReturn(messageLength);
+        final long messageLength = ALIGNMENT * 4;
+        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn(messageLength);
+        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(messageLength * 3);
+        when(buffer.getLongVolatile(messageLength * 2)).thenReturn(0L).thenReturn(messageLength);
 
         assertFalse(ringBuffer.unblock());
         verify(buffer, never()).putLongOrdered(messageLength, makeHeader(messageLength, PADDING_MSG_TYPE_ID));
@@ -346,11 +346,11 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldNotUnblockGapWithMessageRaceWhenScanForwardTakesAnInterrupt()
     {
-        final int messageLength = ALIGNMENT * 4;
-        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn((long)messageLength);
-        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn((long)messageLength * 3);
-        when(buffer.getIntVolatile(messageLength * 2)).thenReturn(0).thenReturn(messageLength);
-        when(buffer.getIntVolatile(messageLength * 2 + ALIGNMENT)).thenReturn(7);
+        final long messageLength = ALIGNMENT * 4;
+        when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn(messageLength);
+        when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(messageLength * 3);
+        when(buffer.getLongVolatile(messageLength * 2)).thenReturn(0L).thenReturn(messageLength);
+        when(buffer.getLongVolatile(messageLength * 2 + ALIGNMENT)).thenReturn(7L);
 
         assertFalse(ringBuffer.unblock());
         verify(buffer, never()).putLongOrdered(messageLength, makeHeader(messageLength, PADDING_MSG_TYPE_ID));
@@ -381,10 +381,10 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldInsertPaddingAndWriteToBuffer()
     {
-        final int padding = 200;
+        final long padding = 200;
         final int messageLength = 400;
-        final int recordLength = messageLength + HEADER_LENGTH;
-        final int alignedRecordLength = align(recordLength, ALIGNMENT);
+        final long recordLength = messageLength + HEADER_LENGTH;
+        final long alignedRecordLength = align(recordLength, ALIGNMENT);
 
         final long tail = 2 * CAPACITY - padding;
         final long head = tail;
