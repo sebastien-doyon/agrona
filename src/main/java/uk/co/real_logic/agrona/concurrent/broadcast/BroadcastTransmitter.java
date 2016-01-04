@@ -92,7 +92,7 @@ public class BroadcastTransmitter
      * @throws IllegalArgumentException of the msgTypeId is not valid,
      *                                  or if the message length is greater than {@link #maxMsgLength()}.
      */
-    public void transmit(final int msgTypeId, final DirectBuffer srcBuffer, final int srcIndex, final int length)
+    public void transmit(final int msgTypeId, final DirectBuffer srcBuffer, final long srcIndex, final long length)
     {
         checkTypeId(msgTypeId);
         checkMessageLength(length);
@@ -139,7 +139,7 @@ public class BroadcastTransmitter
         buffer.putInt(typeOffset(recordOffset), PADDING_MSG_TYPE_ID);
     }
 
-    private void checkMessageLength(final int length)
+    private void checkMessageLength(final long length)
     {
         if (length > maxMsgLength)
         {

@@ -80,7 +80,7 @@ public class OneToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public boolean write(final int msgTypeId, final DirectBuffer srcBuffer, final int srcIndex, final int length)
+    public boolean write(final int msgTypeId, final DirectBuffer srcBuffer, final long srcIndex, final long length)
     {
         checkTypeId(msgTypeId);
         checkMsgLength(length);
@@ -290,7 +290,7 @@ public class OneToOneRingBuffer implements RingBuffer
         return false;
     }
 
-    private void checkMsgLength(final int length)
+    private void checkMsgLength(final long length)
     {
         if (length > maxMsgLength)
         {
