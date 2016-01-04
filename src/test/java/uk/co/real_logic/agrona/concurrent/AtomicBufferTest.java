@@ -64,7 +64,7 @@ public class AtomicBufferTest
     @Theory
     public void shouldGetCapacity(final AtomicBuffer buffer)
     {
-        assertThat(buffer.capacity(), is(BUFFER_CAPACITY));
+        assertThat(buffer.capacity(), is((long) BUFFER_CAPACITY));
     }
 
     @Theory
