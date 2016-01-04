@@ -17,7 +17,6 @@ package uk.co.real_logic.agrona.concurrent;
 
 import uk.co.real_logic.agrona.DirectBuffer;
 import uk.co.real_logic.agrona.IoUtil;
-import uk.co.real_logic.agrona.MutableDirectBuffer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -31,7 +30,8 @@ import static uk.co.real_logic.agrona.concurrent.UnsafeBuffer.*;
 /**
  * Supports regular, byte ordered, and atomic (memory ordered) access to an underlying buffer.
  *
- * This buffer is resizable and based upon an underlying
+ * This buffer is resizable and based upon an underlying FileChannel.
+ * The channel is <b>not</b> closed when the buffer is closed.
  */
 public class MappedResizeableBuffer implements AutoCloseable
 {
@@ -75,41 +75,6 @@ public class MappedResizeableBuffer implements AutoCloseable
         map(0, newLength);
     }
 
-    public void wrap(final byte[] buffer)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wrap(final byte[] buffer, final int offset, final int length)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wrap(final ByteBuffer buffer)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wrap(final ByteBuffer buffer, final int offset, final int length)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wrap(final DirectBuffer buffer)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wrap(final DirectBuffer buffer, final long offset, final int length)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wrap(final long address, final int length)
-    {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Remap the buffer using the existing file based on a new offset and length
      *
@@ -143,16 +108,6 @@ public class MappedResizeableBuffer implements AutoCloseable
     public long addressOffset()
     {
         return addressOffset;
-    }
-
-    public byte[] byteArray()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public ByteBuffer byteBuffer()
-    {
-        throw new UnsupportedOperationException();
     }
 
     public void setMemory(final long index, final int length, final byte value)
@@ -694,11 +649,6 @@ public class MappedResizeableBuffer implements AutoCloseable
         UNSAFE.copyMemory(null, addressOffset + index, dst, ARRAY_BASE_OFFSET + offset, length);
     }
 
-    public void getBytes(final long index, final MutableDirectBuffer dstBuffer, final long dstIndex, final int length)
-    {
-        // TODO: dstBuffer.putBytes(dstIndex, this, index, length);
-    }
-
     public void getBytes(final long index, final ByteBuffer dstBuffer, final int length)
     {
         final int dstOffset = dstBuffer.position();
@@ -778,7 +728,7 @@ public class MappedResizeableBuffer implements AutoCloseable
         UNSAFE.copyMemory(srcnull, srcBaseOffset + srcIndex, null, addressOffset + index, length);
     }
 
-    public void putBytes(final long index, final DirectBuffer srcBuffer, final long srcIndex, final int length)
+    public void putBytes(final long index, final DirectBuffer srcBuffer, final int srcIndex, final int length)
     {
         if (SHOULD_BOUNDS_CHECK)
         {
