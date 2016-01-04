@@ -31,5 +31,5 @@ public interface MessageHandler
      * @param index at which the encoded message begins.
      * @param length in bytes of the encoded message.
      */
-    void onMessage(int msgTypeId, MutableDirectBuffer buffer, int index, int length);
+    void onMessage(int msgTypeId, MutableDirectBuffer buffer, long index, long length);
 }

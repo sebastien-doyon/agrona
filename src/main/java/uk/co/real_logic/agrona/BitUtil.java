@@ -243,7 +243,7 @@ public class BitUtil
      * @param value to be checked.
      * @return true if the number is a positive power of two otherwise false.
      */
-    public static boolean isPowerOfTwo(final int value)
+    public static boolean isPowerOfTwo(final long value)
     {
         return value > 0 && ((value & (~value + 1)) == value);
     }

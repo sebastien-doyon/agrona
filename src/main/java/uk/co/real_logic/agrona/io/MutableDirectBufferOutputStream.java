@@ -27,7 +27,7 @@ public class MutableDirectBufferOutputStream extends OutputStream
 {
     private MutableDirectBuffer buffer;
     private int offset;
-    private int length;
+    private long length;
     private int position;
 
     public MutableDirectBufferOutputStream()
@@ -39,7 +39,7 @@ public class MutableDirectBufferOutputStream extends OutputStream
         wrap(buffer, 0, buffer.capacity());
     }
 
-    public MutableDirectBufferOutputStream(final MutableDirectBuffer buffer, final int offset, final int length)
+    public MutableDirectBufferOutputStream(final MutableDirectBuffer buffer, final int offset, final long length)
     {
         wrap(buffer, offset, length);
     }
@@ -49,7 +49,7 @@ public class MutableDirectBufferOutputStream extends OutputStream
         wrap(buffer, 0, buffer.capacity());
     }
 
-    public void wrap(final MutableDirectBuffer buffer, final int offset, final int length)
+    public void wrap(final MutableDirectBuffer buffer, final int offset, final long length)
     {
         if (null == buffer)
         {

@@ -37,13 +37,13 @@ import static uk.co.real_logic.agrona.concurrent.broadcast.RecordDescriptor.*;
 public class BroadcastReceiver
 {
     private final AtomicBuffer buffer;
-    private final int capacity;
-    private final int mask;
-    private final int tailIntentCounterIndex;
-    private final int tailCounterIndex;
-    private final int latestCounterIndex;
+    private final long capacity;
+    private final long mask;
+    private final long tailIntentCounterIndex;
+    private final long tailCounterIndex;
+    private final long latestCounterIndex;
 
-    private int recordOffset = 0;
+    private long recordOffset = 0;
     private long cursor = 0;
     private long nextRecord = 0;
     private final AtomicLong lappedCount = new AtomicLong();
@@ -76,7 +76,7 @@ public class BroadcastReceiver
      *
      * @return the capacity of the underlying broadcast buffer.
      */
-    public int capacity()
+    public long capacity()
     {
         return capacity;
     }
@@ -109,7 +109,7 @@ public class BroadcastReceiver
      *
      * @return offset for the beginning of the next message in the transmission stream.
      */
-    public int offset()
+    public long offset()
     {
         return msgOffset(recordOffset);
     }
@@ -119,7 +119,7 @@ public class BroadcastReceiver
      *
      * @return length of the next message in the transmission stream.
      */
-    public int length()
+    public long length()
     {
         return buffer.getInt(lengthOffset(recordOffset)) - HEADER_LENGTH;
     }
@@ -151,14 +151,14 @@ public class BroadcastReceiver
 
         if (tail > cursor)
         {
-            int recordOffset = (int)cursor & mask;
+            int recordOffset = (int)(cursor & mask);
 
             if (!validate(cursor))
             {
                 lappedCount.lazySet(lappedCount.get() + 1);
 
                 cursor = buffer.getLong(latestCounterIndex);
-                recordOffset = (int)cursor & mask;
+                recordOffset = (int)(cursor & mask);
             }
 
             this.cursor = cursor;
