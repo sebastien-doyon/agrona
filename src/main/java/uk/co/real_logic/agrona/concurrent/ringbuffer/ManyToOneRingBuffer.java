@@ -39,14 +39,14 @@ public class ManyToOneRingBuffer implements RingBuffer
      */
     private static final int INSUFFICIENT_CAPACITY = -2;
 
-    private final int capacity;
-    private final int mask;
-    private final int maxMsgLength;
-    private final int tailPositionIndex;
-    private final int headCachePositionIndex;
-    private final int headPositionIndex;
-    private final int correlationIdCounterIndex;
-    private final int consumerHeartbeatIndex;
+    private final long capacity;
+    private final long mask;
+    private final long maxMsgLength;
+    private final long tailPositionIndex;
+    private final long headCachePositionIndex;
+    private final long headPositionIndex;
+    private final long correlationIdCounterIndex;
+    private final long consumerHeartbeatIndex;
     private final AtomicBuffer buffer;
 
     /**
@@ -78,7 +78,7 @@ public class ManyToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public int capacity()
+    public long capacity()
     {
         return capacity;
     }
@@ -132,14 +132,14 @@ public class ManyToOneRingBuffer implements RingBuffer
 
         int bytesRead = 0;
 
-        final int headIndex = (int)head & mask;
-        final int contiguousBlockLength = capacity - headIndex;
+        final long headIndex = (int)head & mask;
+        final long contiguousBlockLength = capacity - headIndex;
 
         try
         {
             while ((bytesRead < contiguousBlockLength) && (messagesRead < messageCountLimit))
             {
-                final int recordIndex = headIndex + bytesRead;
+                final long recordIndex = headIndex + bytesRead;
                 final long header = buffer.getLongVolatile(recordIndex);
 
                 final int recordLength = recordLength(header);
@@ -175,7 +175,7 @@ public class ManyToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public int maxMsgLength()
+    public long maxMsgLength()
     {
         return maxMsgLength;
     }
@@ -272,7 +272,7 @@ public class ManyToOneRingBuffer implements RingBuffer
         else if (0 == length)
         {
             // go from (consumerIndex to producerIndex) or (consumerIndex to capacity)
-            final int limit = producerIndex > consumerIndex ? producerIndex : buffer.capacity();
+            final long limit = producerIndex > consumerIndex ? producerIndex : buffer.capacity();
             int i = consumerIndex + ALIGNMENT;
 
             do
@@ -328,20 +328,20 @@ public class ManyToOneRingBuffer implements RingBuffer
 
     private int claimCapacity(final AtomicBuffer buffer, final int requiredCapacity)
     {
-        final int capacity = this.capacity;
-        final int tailPositionIndex = this.tailPositionIndex;
-        final int headCachePositionIndex = this.headCachePositionIndex;
-        final int mask = this.mask;
+        final long capacity = this.capacity;
+        final long tailPositionIndex = this.tailPositionIndex;
+        final long headCachePositionIndex = this.headCachePositionIndex;
+        final long mask = this.mask;
 
         long head = buffer.getLongVolatile(headCachePositionIndex);
 
         long tail;
         int tailIndex;
-        int padding;
+        long padding;
         do
         {
             tail = buffer.getLongVolatile(tailPositionIndex);
-            final int availableCapacity = capacity - (int)(tail - head);
+            final long availableCapacity = capacity - (int)(tail - head);
 
             if (requiredCapacity > availableCapacity)
             {
@@ -356,17 +356,17 @@ public class ManyToOneRingBuffer implements RingBuffer
             }
 
             padding = 0;
-            tailIndex = (int)tail & mask;
-            final int toBufferEndLength = capacity - tailIndex;
+            tailIndex = (int)(tail & mask);
+            final long toBufferEndLength = capacity - tailIndex;
 
             if (requiredCapacity > toBufferEndLength)
             {
-                int headIndex = (int)head & mask;
+                int headIndex = (int)(head & mask);
 
                 if (requiredCapacity > headIndex)
                 {
                     head = buffer.getLongVolatile(headPositionIndex);
-                    headIndex = (int)head & mask;
+                    headIndex = (int)(head & mask);
                     if (requiredCapacity > headIndex)
                     {
                         return INSUFFICIENT_CAPACITY;

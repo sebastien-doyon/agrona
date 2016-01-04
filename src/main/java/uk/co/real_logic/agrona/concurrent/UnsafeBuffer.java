@@ -52,7 +52,7 @@ public class UnsafeBuffer implements AtomicBuffer
     private ByteBuffer byteBuffer;
     private long addressOffset;
 
-    private int capacity;
+    private long capacity;
 
     /**
      * Attach a view to a byte[] for providing direct access.
@@ -227,7 +227,7 @@ public class UnsafeBuffer implements AtomicBuffer
     {
         if (SHOULD_BOUNDS_CHECK)
         {
-            final int bufferCapacity = buffer.capacity();
+            final long bufferCapacity = buffer.capacity();
             if (offset != 0 && (offset < 0 || offset > bufferCapacity - 1))
             {
                 throw new IllegalArgumentException("offset=" + offset + " not valid for buffer.capacity()=" + bufferCapacity);
@@ -279,7 +279,7 @@ public class UnsafeBuffer implements AtomicBuffer
         UNSAFE.setMemory(byteArray, addressOffset + index, length, value);
     }
 
-    public int capacity()
+    public long capacity()
     {
         return capacity;
     }

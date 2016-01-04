@@ -188,7 +188,7 @@ public interface MutableDirectBuffer extends DirectBuffer
      * @param srcIndex  in the source buffer from which the byte copy will begin.
      * @param length    of the bytes to be copied.
      */
-    void putBytes(long index, DirectBuffer srcBuffer, long srcIndex, int length);
+    void putBytes(long index, DirectBuffer srcBuffer, long srcIndex, long length);
 
     /**
      * Encode a String as UTF-8 bytes to the buffer with a length prefix.

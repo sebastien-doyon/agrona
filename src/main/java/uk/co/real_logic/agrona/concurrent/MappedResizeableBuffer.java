@@ -165,9 +165,9 @@ public class MappedResizeableBuffer implements AutoCloseable
         UNSAFE.setMemory(null, addressOffset + index, length, value);
     }
 
-    public int capacity()
+    public long capacity()
     {
-        return (int) capacity;
+        return capacity;
     }
 
     public void checkLimit(final long limit)

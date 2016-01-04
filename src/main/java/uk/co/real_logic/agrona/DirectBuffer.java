@@ -106,7 +106,7 @@ public interface DirectBuffer
      *
      * @return the capacity of the underlying buffer in bytes.
      */
-    int capacity();
+    long capacity();
 
     /**
      * Check that a given limit is not greater than the capacity of a buffer from a given offset.

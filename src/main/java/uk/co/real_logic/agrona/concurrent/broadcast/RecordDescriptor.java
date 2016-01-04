@@ -42,10 +42,10 @@ public class RecordDescriptor
     public static final int PADDING_MSG_TYPE_ID = -1;
 
     /** Offset within the record at which the record length field begins. */
-    public static final int LENGTH_OFFSET = 0;
+    public static final long LENGTH_OFFSET = 0;
 
     /** Offset within the record at which the message type field begins. */
-    public static final int TYPE_OFFSET = LENGTH_OFFSET + BitUtil.SIZE_OF_INT;
+    public static final long TYPE_OFFSET = LENGTH_OFFSET + BitUtil.SIZE_OF_INT;
 
     /** Length of the record header in bytes. */
     public static final int HEADER_LENGTH = BitUtil.SIZE_OF_INT * 2;
@@ -70,7 +70,7 @@ public class RecordDescriptor
      * @param recordOffset at which the frame begins.
      * @return the offset at which the message length field begins.
      */
-    public static int lengthOffset(final int recordOffset)
+    public static long lengthOffset(final long recordOffset)
     {
         return recordOffset + LENGTH_OFFSET;
     }
@@ -81,7 +81,7 @@ public class RecordDescriptor
      * @param recordOffset at which the frame begins.
      * @return the offset at which the message type field begins.
      */
-    public static int typeOffset(final int recordOffset)
+    public static long typeOffset(final long recordOffset)
     {
         return recordOffset + TYPE_OFFSET;
     }
@@ -92,7 +92,7 @@ public class RecordDescriptor
      * @param recordOffset at which the frame begins.
      * @return the offset at which the encoded message begins.
      */
-    public static int msgOffset(final int recordOffset)
+    public static long msgOffset(final long recordOffset)
     {
         return recordOffset + HEADER_LENGTH;
     }
