@@ -67,7 +67,7 @@ public class BroadcastTransmitter
      *
      * @return the capacity of the underlying broadcast buffer.
      */
-    public int capacity()
+    public long capacity()
     {
         return capacity;
     }
@@ -77,7 +77,7 @@ public class BroadcastTransmitter
      *
      * @return the maximum message length that can be transmitted for a buffer.
      */
-    public int maxMsgLength()
+    public long maxMsgLength()
     {
         return maxMsgLength;
     }
@@ -99,12 +99,12 @@ public class BroadcastTransmitter
 
         final AtomicBuffer buffer = this.buffer;
         long currentTail = buffer.getLong(tailCounterIndex);
-        int recordOffset = (int)currentTail & mask;
-        final int recordLength = HEADER_LENGTH + length;
-        final int recordLengthAligned = BitUtil.align(recordLength, RECORD_ALIGNMENT);
+        long recordOffset = currentTail & mask;
+        final long recordLength = HEADER_LENGTH + length;
+        final long recordLengthAligned = BitUtil.align(recordLength, RECORD_ALIGNMENT);
         final long newTail = currentTail + recordLengthAligned;
 
-        final int toEndOfBuffer = capacity - recordOffset;
+        final long toEndOfBuffer = capacity - recordOffset;
         if (toEndOfBuffer < recordLengthAligned)
         {
             signalTailIntent(buffer, newTail + toEndOfBuffer);
@@ -118,7 +118,7 @@ public class BroadcastTransmitter
             signalTailIntent(buffer, newTail);
         }
 
-        buffer.putInt(lengthOffset(recordOffset), recordLength);
+        buffer.putLong(lengthOffset(recordOffset), recordLength);
         buffer.putInt(typeOffset(recordOffset), msgTypeId);
 
         buffer.putBytes(msgOffset(recordOffset), srcBuffer, srcIndex, length);
@@ -133,9 +133,9 @@ public class BroadcastTransmitter
         UnsafeAccess.UNSAFE.storeFence();
     }
 
-    private static void insertPaddingRecord(final AtomicBuffer buffer, final int recordOffset, final int length)
+    private static void insertPaddingRecord(final AtomicBuffer buffer, final long recordOffset, final long length)
     {
-        buffer.putInt(lengthOffset(recordOffset), length);
+        buffer.putLong(lengthOffset(recordOffset), length);
         buffer.putInt(typeOffset(recordOffset), PADDING_MSG_TYPE_ID);
     }
 

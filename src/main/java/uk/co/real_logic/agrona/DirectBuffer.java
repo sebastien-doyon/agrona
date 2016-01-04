@@ -299,5 +299,5 @@ public interface DirectBuffer
      * @param length in bytes of the range to check.
      * @throws java.lang.IndexOutOfBoundsException if the length goes outside of the capacity range.
      */
-    void boundsCheck(long index, int length);
+    void boundsCheck(long index, long length);
 }

@@ -52,7 +52,7 @@ public class RecordDescriptor
      * @param recordOffset beginning index of the record.
      * @return offset from the beginning of a record at which the type field begins.
      */
-    public static int lengthOffset(final int recordOffset)
+    public static long lengthOffset(final long recordOffset)
     {
         return recordOffset;
     }
@@ -63,7 +63,7 @@ public class RecordDescriptor
      * @param recordOffset beginning index of the record.
      * @return offset from the beginning of a record at which the type field begins.
      */
-    public static int typeOffset(final int recordOffset)
+    public static long typeOffset(final long recordOffset)
     {
         return recordOffset + SIZE_OF_INT;
     }
@@ -74,7 +74,7 @@ public class RecordDescriptor
      * @param recordOffset beginning index of the record.
      * @return offset from the beginning of a record at which the encoded message begins.
      */
-    public static int encodedMsgOffset(final int recordOffset)
+    public static long encodedMsgOffset(final long recordOffset)
     {
         return recordOffset + HEADER_LENGTH;
     }

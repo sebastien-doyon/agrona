@@ -33,14 +33,14 @@ public class OneToOneRingBuffer implements RingBuffer
      */
     public static final int PADDING_MSG_TYPE_ID = -1;
 
-    private final int capacity;
-    private final int mask;
-    private final int maxMsgLength;
-    private final int tailPositionIndex;
-    private final int headCachePositionIndex;
-    private final int headPositionIndex;
-    private final int correlationIdCounterIndex;
-    private final int consumerHeartbeatIndex;
+    private final long capacity;
+    private final long mask;
+    private final long maxMsgLength;
+    private final long tailPositionIndex;
+    private final long headCachePositionIndex;
+    private final long headPositionIndex;
+    private final long correlationIdCounterIndex;
+    private final long consumerHeartbeatIndex;
     private final AtomicBuffer buffer;
 
     /**
@@ -72,7 +72,7 @@ public class OneToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public int capacity()
+    public long capacity()
     {
         return capacity;
     }
@@ -86,22 +86,22 @@ public class OneToOneRingBuffer implements RingBuffer
         checkMsgLength(length);
 
         final AtomicBuffer buffer = this.buffer;
-        final int recordLength = length + HEADER_LENGTH;
-        final int requiredCapacity = align(recordLength, ALIGNMENT);
-        final int capacity = this.capacity;
-        final int tailPositionIndex = this.tailPositionIndex;
-        final int headCachePositionIndex = this.headCachePositionIndex;
-        final int mask = this.mask;
+        final long recordLength = length + HEADER_LENGTH;
+        final long requiredCapacity = align(recordLength, ALIGNMENT);
+        final long capacity = this.capacity;
+        final long tailPositionIndex = this.tailPositionIndex;
+        final long headCachePositionIndex = this.headCachePositionIndex;
+        final long mask = this.mask;
 
         long head = buffer.getLong(headCachePositionIndex);
         final long tail = buffer.getLong(tailPositionIndex);
-        final int availableCapacity = capacity - (int)(tail - head);
+        final long availableCapacity = capacity - (int)(tail - head);
 
         if (requiredCapacity > availableCapacity)
         {
             head = buffer.getLongVolatile(headPositionIndex);
 
-            if (requiredCapacity > (capacity - (int)(tail - head)))
+            if (requiredCapacity > (capacity - (tail - head)))
             {
                 return false;
             }
@@ -109,13 +109,13 @@ public class OneToOneRingBuffer implements RingBuffer
             buffer.putLong(headCachePositionIndex, head);
         }
 
-        int padding = 0;
-        int recordIndex = (int)tail & mask;
-        final int toBufferEndLength = capacity - recordIndex;
+        long padding = 0;
+        long recordIndex = tail & mask;
+        final long toBufferEndLength = capacity - recordIndex;
 
         if (requiredCapacity > toBufferEndLength)
         {
-            int headIndex = (int)head & mask;
+            long headIndex = head & mask;
 
             if (requiredCapacity > headIndex)
             {
@@ -166,14 +166,14 @@ public class OneToOneRingBuffer implements RingBuffer
 
         int bytesRead = 0;
 
-        final int headIndex = (int)head & mask;
-        final int contiguousBlockLength = capacity - headIndex;
+        final long headIndex = head & mask;
+        final long contiguousBlockLength = capacity - headIndex;
 
         try
         {
             while ((bytesRead < contiguousBlockLength) && (messagesRead < messageCountLimit))
             {
-                final int recordIndex = headIndex + bytesRead;
+                final long recordIndex = headIndex + bytesRead;
                 final long header = buffer.getLongVolatile(recordIndex);
 
                 final int recordLength = recordLength(header);
@@ -209,7 +209,7 @@ public class OneToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public int maxMsgLength()
+    public long maxMsgLength()
     {
         return maxMsgLength;
     }

@@ -894,7 +894,7 @@ public class UnsafeBuffer implements AtomicBuffer
         UNSAFE.copyMemory(srcByteArray, srcBaseOffset + srcIndex, byteArray, addressOffset + index, length);
     }
 
-    public void putBytes(final long index, final DirectBuffer srcBuffer, final long srcIndex, final int length)
+    public void putBytes(final long index, final DirectBuffer srcBuffer, final long srcIndex, final long length)
     {
         if (SHOULD_BOUNDS_CHECK)
         {
@@ -1038,7 +1038,7 @@ public class UnsafeBuffer implements AtomicBuffer
 
     ///////////////////////////////////////////////////////////////////////////
 
-    public void boundsCheck(final long index, final int length)
+    public void boundsCheck(final long index, final long length)
     {
         final long resultingPosition = index + (long)length;
         if (index < 0 || resultingPosition > capacity)

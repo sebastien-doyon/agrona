@@ -94,9 +94,9 @@ public class ManyToOneRingBuffer implements RingBuffer
         boolean isSuccessful = false;
 
         final AtomicBuffer buffer = this.buffer;
-        final int recordLength = length + HEADER_LENGTH;
-        final int requiredCapacity = align(recordLength, ALIGNMENT);
-        final int recordIndex = claimCapacity(buffer, requiredCapacity);
+        final long recordLength = length + HEADER_LENGTH;
+        final long requiredCapacity = align(recordLength, ALIGNMENT);
+        final long recordIndex = claimCapacity(buffer, requiredCapacity);
 
         if (INSUFFICIENT_CAPACITY != recordIndex)
         {
@@ -104,7 +104,7 @@ public class ManyToOneRingBuffer implements RingBuffer
             UnsafeAccess.UNSAFE.storeFence();
 
             buffer.putBytes(encodedMsgOffset(recordIndex), srcBuffer, srcIndex, length);
-            buffer.putIntOrdered(lengthOffset(recordIndex), recordLength);
+            buffer.putLongOrdered(lengthOffset(recordIndex), recordLength);
 
             isSuccessful = true;
         }
@@ -326,7 +326,7 @@ public class ManyToOneRingBuffer implements RingBuffer
         }
     }
 
-    private int claimCapacity(final AtomicBuffer buffer, final int requiredCapacity)
+    private int claimCapacity(final AtomicBuffer buffer, final long requiredCapacity)
     {
         final long capacity = this.capacity;
         final long tailPositionIndex = this.tailPositionIndex;

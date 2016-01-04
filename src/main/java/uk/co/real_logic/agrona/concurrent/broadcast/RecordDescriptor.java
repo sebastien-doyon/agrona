@@ -15,7 +15,8 @@
  */
 package uk.co.real_logic.agrona.concurrent.broadcast;
 
-import uk.co.real_logic.agrona.BitUtil;
+import static uk.co.real_logic.agrona.BitUtil.SIZE_OF_INT;
+import static uk.co.real_logic.agrona.BitUtil.SIZE_OF_LONG;
 
 /**
  * Description of the structure for a record in the broadcast buffer.
@@ -45,10 +46,10 @@ public class RecordDescriptor
     public static final long LENGTH_OFFSET = 0;
 
     /** Offset within the record at which the message type field begins. */
-    public static final long TYPE_OFFSET = LENGTH_OFFSET + BitUtil.SIZE_OF_INT;
+    public static final long TYPE_OFFSET = LENGTH_OFFSET + SIZE_OF_LONG;
 
     /** Length of the record header in bytes. */
-    public static final int HEADER_LENGTH = BitUtil.SIZE_OF_INT * 2;
+    public static final int HEADER_LENGTH = SIZE_OF_INT  + SIZE_OF_LONG;
 
     /** Alignment as a multiple of bytes for each record. */
     public static final int RECORD_ALIGNMENT = HEADER_LENGTH;
@@ -59,7 +60,7 @@ public class RecordDescriptor
      * @param capacity of the log buffer.
      * @return the maximum supported size for a message.
      */
-    public static int calculateMaxMessageLength(final int capacity)
+    public static long calculateMaxMessageLength(final long capacity)
     {
         return capacity / 8;
     }
