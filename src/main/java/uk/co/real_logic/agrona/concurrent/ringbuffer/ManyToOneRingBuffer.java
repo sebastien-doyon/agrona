@@ -104,7 +104,7 @@ public class ManyToOneRingBuffer implements RingBuffer
             UnsafeAccess.UNSAFE.storeFence();
 
             buffer.putBytes(encodedMsgOffset(recordIndex), srcBuffer, srcIndex, length);
-            buffer.putLongOrdered(lengthOffset(recordIndex), recordLength);
+            buffer.putIntOrdered(lengthOffset(recordIndex), recordLength);
 
             isSuccessful = true;
         }

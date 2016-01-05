@@ -70,7 +70,7 @@ public class ManyToOneRingBufferTest
         final InOrder inOrder = inOrder(buffer);
         inOrder.verify(buffer).putLongOrdered((int)tail, makeHeader(-recordLength, MSG_TYPE_ID));
         inOrder.verify(buffer).putBytes(encodedMsgOffset((int)tail), srcBuffer, srcIndex, length);
-        inOrder.verify(buffer).putLongOrdered(lengthOffset((int)tail), recordLength);
+        inOrder.verify(buffer).putIntOrdered(lengthOffset((int)tail), recordLength);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ManyToOneRingBufferTest
 
         inOrder.verify(buffer).putLongOrdered(0, makeHeader(-recordLength, MSG_TYPE_ID));
         inOrder.verify(buffer).putBytes(encodedMsgOffset(0), srcBuffer, srcIndex, length);
-        inOrder.verify(buffer).putLongOrdered(lengthOffset(0), recordLength);
+        inOrder.verify(buffer).putIntOrdered(lengthOffset(0), recordLength);
     }
 
     @Test
@@ -163,7 +163,7 @@ public class ManyToOneRingBufferTest
 
         inOrder.verify(buffer).putLongOrdered(0, makeHeader(-recordLength, MSG_TYPE_ID));
         inOrder.verify(buffer).putBytes(encodedMsgOffset(0), srcBuffer, srcIndex, length);
-        inOrder.verify(buffer).putLongOrdered(lengthOffset(0), recordLength);
+        inOrder.verify(buffer).putIntOrdered(lengthOffset(0), recordLength);
     }
 
     @Test
