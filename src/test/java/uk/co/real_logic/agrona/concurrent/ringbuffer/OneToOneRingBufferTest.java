@@ -51,8 +51,8 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldWriteToEmptyBuffer()
     {
-        final long length = 8;
-        final long recordLength = length + HEADER_LENGTH;
+        final int length = 8;
+        final int recordLength = length + HEADER_LENGTH;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = 0L;
         final long head = 0L;
@@ -74,7 +74,7 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldRejectWriteWhenInsufficientSpace()
     {
-        final long length = 200;
+        final int length = 200;
         final long head = 0L;
         final long tail = head + (CAPACITY - align(length - ALIGNMENT, ALIGNMENT));
 
@@ -94,7 +94,7 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldRejectWriteWhenBufferFull()
     {
-        final long length = 8;
+        final int length = 8;
         final long head = 0L;
         final long tail = head + CAPACITY;
 
@@ -112,8 +112,8 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldInsertPaddingRecordPlusMessageOnBufferWrap()
     {
-        final long length = 200;
-        final long recordLength = length + HEADER_LENGTH;
+        final int length = 200;
+        final int recordLength = length + HEADER_LENGTH;
         final long tail = CAPACITY - HEADER_LENGTH;
         final long head = tail - (ALIGNMENT * 4);
 
@@ -135,8 +135,8 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldInsertPaddingRecordPlusMessageOnBufferWrapWithHeadEqualToTail()
     {
-        final long length = 200;
-        final long recordLength = length + HEADER_LENGTH;
+        final int length = 200;
+        final int recordLength = length + HEADER_LENGTH;
         final long tail = CAPACITY - HEADER_LENGTH;
         final long head = tail;
 
@@ -193,8 +193,8 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldReadTwoMessages()
     {
-        final long msgLength = 16;
-        final long recordLength = HEADER_LENGTH + msgLength;
+        final int msgLength = 16;
+        final int recordLength = HEADER_LENGTH + msgLength;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = alignedRecordLength * 2;
         final long head = 0L;
@@ -219,8 +219,8 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldLimitReadOfMessages()
     {
-        final long msgLength = 16;
-        final long recordLength = HEADER_LENGTH + msgLength;
+        final int msgLength = 16;
+        final int recordLength = HEADER_LENGTH + msgLength;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long head = 0L;
         final long headIndex = head;
@@ -244,8 +244,8 @@ public class OneToOneRingBufferTest
     @Test
     public void shouldCopeWithExceptionFromHandler()
     {
-        final long msgLength = 16;
-        final long recordLength = HEADER_LENGTH + msgLength;
+        final int msgLength = 16;
+        final int recordLength = HEADER_LENGTH + msgLength;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = alignedRecordLength * 2;
         final long head = 0L;

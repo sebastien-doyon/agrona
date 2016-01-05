@@ -35,7 +35,7 @@ public class OneToOneRingBuffer implements RingBuffer
 
     private final long capacity;
     private final long mask;
-    private final long maxMsgLength;
+    private final int maxMsgLength;
     private final long tailPositionIndex;
     private final long headCachePositionIndex;
     private final long headPositionIndex;
@@ -61,7 +61,7 @@ public class OneToOneRingBuffer implements RingBuffer
         buffer.verifyAlignment();
 
         mask = capacity - 1;
-        maxMsgLength = capacity / 8;
+        maxMsgLength = (int) (capacity / 8);
         tailPositionIndex = capacity + RingBufferDescriptor.TAIL_POSITION_OFFSET;
         headCachePositionIndex = capacity + RingBufferDescriptor.HEAD_CACHE_POSITION_OFFSET;
         headPositionIndex = capacity + RingBufferDescriptor.HEAD_POSITION_OFFSET;
@@ -80,13 +80,13 @@ public class OneToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public boolean write(final int msgTypeId, final DirectBuffer srcBuffer, final long srcIndex, final long length)
+    public boolean write(final int msgTypeId, final DirectBuffer srcBuffer, final long srcIndex, final int length)
     {
         checkTypeId(msgTypeId);
         checkMsgLength(length);
 
         final AtomicBuffer buffer = this.buffer;
-        final long recordLength = length + HEADER_LENGTH;
+        final int recordLength = length + HEADER_LENGTH;
         final long requiredCapacity = align(recordLength, ALIGNMENT);
         final long capacity = this.capacity;
         final long tailPositionIndex = this.tailPositionIndex;
@@ -109,9 +109,9 @@ public class OneToOneRingBuffer implements RingBuffer
             buffer.putLong(headCachePositionIndex, head);
         }
 
-        long padding = 0;
-        long recordIndex = tail & mask;
-        final long toBufferEndLength = capacity - recordIndex;
+        int padding = 0;
+        int recordIndex = (int) (tail & mask);
+        final int toBufferEndLength = (int) capacity - recordIndex;
 
         if (requiredCapacity > toBufferEndLength)
         {
@@ -209,7 +209,7 @@ public class OneToOneRingBuffer implements RingBuffer
     /**
      * {@inheritDoc}
      */
-    public long maxMsgLength()
+    public int maxMsgLength()
     {
         return maxMsgLength;
     }

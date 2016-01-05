@@ -41,7 +41,7 @@ public interface RingBuffer
      * @return true if written to the ring-buffer, or false if insufficient space exists.
      * @throws IllegalArgumentException if the length is greater than {@link RingBuffer#maxMsgLength()}
      */
-    boolean write(int msgTypeId, DirectBuffer srcBuffer, long srcIndex, long length);
+    boolean write(int msgTypeId, DirectBuffer srcBuffer, long srcIndex, int length);
 
     /**
      * Read as many messages as are available from the ring buffer.
@@ -65,7 +65,7 @@ public interface RingBuffer
      *
      * @return the maximum message length in bytes supported by the underlying ring buffer.
      */
-    long maxMsgLength();
+    int maxMsgLength();
 
     /**
      * Get the next value that can be used for a correlation id on an message when a response needs to be correlated.

@@ -86,7 +86,7 @@ public class RecordDescriptor
      * @param msgTypeId of the message stored in the record
      * @return the fields combined into a long.
      */
-    public static long makeHeader(final long length, final int msgTypeId)
+    public static long makeHeader(final int length, final int msgTypeId)
     {
         return ((msgTypeId & 0xFFFF_FFFFL) << 32) | (length & 0xFFFF_FFFFL);
     }

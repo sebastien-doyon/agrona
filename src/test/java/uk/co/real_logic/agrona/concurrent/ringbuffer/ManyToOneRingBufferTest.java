@@ -52,9 +52,9 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldWriteToEmptyBuffer()
     {
-        final long length = 8;
-        final long recordLength = length + HEADER_LENGTH;
-        final long alignedRecordLength = align(recordLength, ALIGNMENT);
+        final int length = 8;
+        final int recordLength = length + HEADER_LENGTH;
+        final int alignedRecordLength = (int) align(recordLength, ALIGNMENT);
         final long tail = 0L;
         final long head = 0L;
 
@@ -76,7 +76,7 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldRejectWriteWhenInsufficientSpace()
     {
-        final long length = 200;
+        final int length = 200;
         final long head = 0L;
         final long tail = head + (CAPACITY - align(length - ALIGNMENT, ALIGNMENT));
 
@@ -97,7 +97,7 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldRejectWriteWhenBufferFull()
     {
-        final long length = 8;
+        final int length = 8;
         final long head = 0L;
         final long tail = head + CAPACITY;
 
@@ -117,8 +117,8 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldInsertPaddingRecordPlusMessageOnBufferWrap()
     {
-        final long length = 200;
-        final long recordLength = length + HEADER_LENGTH;
+        final int length = 200;
+        final int recordLength = length + HEADER_LENGTH;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = CAPACITY - HEADER_LENGTH;
         final long head = tail - (ALIGNMENT * 4);
@@ -143,8 +143,8 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldInsertPaddingRecordPlusMessageOnBufferWrapWithHeadEqualToTail()
     {
-        final long length = 200;
-        final long recordLength = length + HEADER_LENGTH;
+        final int length = 200;
+        final int recordLength = length + HEADER_LENGTH;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = CAPACITY - HEADER_LENGTH;
         final long head = tail;
@@ -204,8 +204,8 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldReadTwoMessages()
     {
-        final long msgLength = 16;
-        final long recordLength = HEADER_LENGTH + msgLength;
+        final int msgLength = 16;
+        final int recordLength = HEADER_LENGTH + msgLength;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = alignedRecordLength * 2;
         final long head = 0L;
@@ -230,8 +230,8 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldLimitReadOfMessages()
     {
-        final long msgLength = 16;
-        final long recordLength = HEADER_LENGTH + msgLength;
+        final int msgLength = 16;
+        final int recordLength = HEADER_LENGTH + msgLength;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long head = 0L;
         final long headIndex = head;
@@ -255,8 +255,8 @@ public class ManyToOneRingBufferTest
     @Test
     public void shouldCopeWithExceptionFromHandler()
     {
-        final long msgLength = 16;
-        final long recordLength = HEADER_LENGTH + msgLength;
+        final int msgLength = 16;
+        final int recordLength = HEADER_LENGTH + msgLength;
         final long alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = alignedRecordLength * 2;
         final long head = 0L;
@@ -311,11 +311,11 @@ public class ManyToOneRingBufferTest
         final long messageLength = ALIGNMENT * 4;
         when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn(messageLength);
         when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(messageLength * 2);
-        when(buffer.getLongVolatile(messageLength)).thenReturn(-messageLength);
+        when(buffer.getIntVolatile(messageLength)).thenReturn((int) -messageLength);
 
         assertTrue(ringBuffer.unblock());
 
-        verify(buffer).putLongOrdered(messageLength, makeHeader(messageLength, PADDING_MSG_TYPE_ID));
+        verify(buffer).putLongOrdered(messageLength, makeHeader((int) messageLength, PADDING_MSG_TYPE_ID));
     }
 
     @Test
@@ -324,11 +324,11 @@ public class ManyToOneRingBufferTest
         final long messageLength = ALIGNMENT * 4;
         when(buffer.getLongVolatile(HEAD_COUNTER_INDEX)).thenReturn(messageLength);
         when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(messageLength * 3);
-        when(buffer.getLongVolatile(messageLength * 2)).thenReturn(messageLength);
+        when(buffer.getIntVolatile(messageLength * 2)).thenReturn((int) messageLength);
 
         assertTrue(ringBuffer.unblock());
 
-        verify(buffer).putLongOrdered(messageLength, makeHeader(messageLength, PADDING_MSG_TYPE_ID));
+        verify(buffer).putLongOrdered(messageLength, makeHeader((int) messageLength, PADDING_MSG_TYPE_ID));
     }
 
     @Test
@@ -340,7 +340,7 @@ public class ManyToOneRingBufferTest
         when(buffer.getLongVolatile(messageLength * 2)).thenReturn(0L).thenReturn(messageLength);
 
         assertFalse(ringBuffer.unblock());
-        verify(buffer, never()).putLongOrdered(messageLength, makeHeader(messageLength, PADDING_MSG_TYPE_ID));
+        verify(buffer, never()).putLongOrdered(messageLength, makeHeader((int) messageLength, PADDING_MSG_TYPE_ID));
     }
 
     @Test
@@ -353,7 +353,7 @@ public class ManyToOneRingBufferTest
         when(buffer.getLongVolatile(messageLength * 2 + ALIGNMENT)).thenReturn(7L);
 
         assertFalse(ringBuffer.unblock());
-        verify(buffer, never()).putLongOrdered(messageLength, makeHeader(messageLength, PADDING_MSG_TYPE_ID));
+        verify(buffer, never()).putLongOrdered(messageLength, makeHeader((int) messageLength, PADDING_MSG_TYPE_ID));
     }
 
     @Test
