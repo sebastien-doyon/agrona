@@ -113,7 +113,7 @@ public class BroadcastReceiverTest
         final long tail = recordLengthAligned * 2;
         final long latestRecord = tail - recordLengthAligned;
         final long recordOffsetOne = 0;
-        final long recordOffsetTwo = (int)latestRecord;
+        final long recordOffsetTwo = latestRecord;
 
         when(buffer.getLongVolatile(TAIL_INTENT_COUNTER_OFFSET)).thenReturn(tail);
         when(buffer.getLongVolatile(TAIL_COUNTER_INDEX)).thenReturn(tail);

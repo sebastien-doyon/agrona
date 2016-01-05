@@ -121,7 +121,7 @@ public class BroadcastReceiver
      */
     public long length()
     {
-        return buffer.getInt(lengthOffset(recordOffset)) - HEADER_LENGTH;
+        return getLengthOffset(recordOffset) - HEADER_LENGTH;
     }
 
     /**
@@ -162,13 +162,13 @@ public class BroadcastReceiver
             }
 
             this.cursor = cursor;
-            nextRecord = cursor + align(buffer.getInt(lengthOffset(recordOffset)), RECORD_ALIGNMENT);
+            nextRecord = cursor + align(getLengthOffset(recordOffset), RECORD_ALIGNMENT);
 
             if (PADDING_MSG_TYPE_ID == buffer.getInt(typeOffset(recordOffset)))
             {
                 recordOffset = 0;
                 this.cursor = nextRecord;
-                nextRecord += align(buffer.getInt(lengthOffset(recordOffset)), RECORD_ALIGNMENT);
+                nextRecord += align(getLengthOffset(recordOffset), RECORD_ALIGNMENT);
             }
 
             this.recordOffset = recordOffset;
@@ -196,5 +196,10 @@ public class BroadcastReceiver
     private boolean validate(final long cursor)
     {
         return (cursor + capacity) > buffer.getLongVolatile(tailIntentCounterIndex);
+    }
+
+    private long getLengthOffset(final long recordOffset)
+    {
+        return buffer.getLong(lengthOffset(recordOffset));
     }
 }

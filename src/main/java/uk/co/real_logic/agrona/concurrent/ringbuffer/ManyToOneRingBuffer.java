@@ -254,8 +254,8 @@ public class ManyToOneRingBuffer implements RingBuffer
     public boolean unblock()
     {
         final AtomicBuffer buffer = this.buffer;
-        final int consumerIndex = (int)(buffer.getLongVolatile(headPositionIndex) & mask);
-        final int producerIndex = (int)(buffer.getLongVolatile(tailPositionIndex) & mask);
+        final long consumerIndex = buffer.getLongVolatile(headPositionIndex) & mask;
+        final long producerIndex = buffer.getLongVolatile(tailPositionIndex) & mask;
 
         if (producerIndex == consumerIndex)
         {
@@ -263,7 +263,7 @@ public class ManyToOneRingBuffer implements RingBuffer
         }
 
         boolean unblocked = false;
-        int length = buffer.getIntVolatile(consumerIndex);
+        long length = buffer.getLongVolatile(consumerIndex);
         if (length < 0)
         {
             buffer.putLongOrdered(consumerIndex, makeHeader(-length, PADDING_MSG_TYPE_ID));
@@ -273,12 +273,12 @@ public class ManyToOneRingBuffer implements RingBuffer
         {
             // go from (consumerIndex to producerIndex) or (consumerIndex to capacity)
             final long limit = producerIndex > consumerIndex ? producerIndex : buffer.capacity();
-            int i = consumerIndex + ALIGNMENT;
+            long i = consumerIndex + ALIGNMENT;
 
             do
             {
                 // read the top int of every long (looking for length aligned to 8=ALIGNMENT)
-                length = buffer.getIntVolatile(i);
+                length = buffer.getLongVolatile(i);
                 if (0 != length)
                 {
                     if (scanBackToConfirmStillZeroed(buffer, i, consumerIndex))
@@ -298,13 +298,14 @@ public class ManyToOneRingBuffer implements RingBuffer
         return unblocked;
     }
 
-    private static boolean scanBackToConfirmStillZeroed(final AtomicBuffer buffer, final int from, final int limit)
+    private static boolean scanBackToConfirmStillZeroed(
+        final AtomicBuffer buffer, final long from, final long limit)
     {
-        int i = from - ALIGNMENT;
+        long i = from - ALIGNMENT;
         boolean allZeros = true;
         while (i >= limit)
         {
-            if (0 != buffer.getIntVolatile(i))
+            if (0 != buffer.getLongVolatile(i))
             {
                 allZeros = false;
                 break;
