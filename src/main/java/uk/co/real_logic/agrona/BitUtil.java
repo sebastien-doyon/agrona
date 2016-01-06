@@ -133,9 +133,9 @@ public class BitUtil
      * @param alignment to be used.
      * @return the value aligned to the next boundary.
      */
-    public static long align(final long value, final long alignment)
+    public static int align(final long value, final long alignment)
     {
-        return (value + (alignment - 1L)) & ~(alignment - 1L);
+        return (int) ((value + (alignment - 1L)) & ~(alignment - 1L));
     }
 
     /**

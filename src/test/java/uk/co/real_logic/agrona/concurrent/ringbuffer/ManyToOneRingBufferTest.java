@@ -54,7 +54,7 @@ public class ManyToOneRingBufferTest
     {
         final int length = 8;
         final int recordLength = length + HEADER_LENGTH;
-        final int alignedRecordLength = (int) align(recordLength, ALIGNMENT);
+        final int alignedRecordLength = align(recordLength, ALIGNMENT);
         final long tail = 0L;
         final long head = 0L;
 

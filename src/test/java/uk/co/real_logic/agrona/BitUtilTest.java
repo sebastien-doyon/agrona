@@ -43,18 +43,18 @@ public class BitUtilTest
     @Test
     public void shouldAlignValueToNextMultipleOfAlignment()
     {
-        final long alignment = BitUtil.CACHE_LINE_LENGTH;
+        final int alignment = BitUtil.CACHE_LINE_LENGTH;
 
-        assertThat(align(0, alignment), is(0L));
+        assertThat(align(0, alignment), is(0));
         assertThat(align(1, alignment), is(alignment));
         assertThat(align(alignment, alignment), is(alignment));
         assertThat(align(alignment + 1, alignment), is(alignment * 2));
 
-        final long remainder = Long.MAX_VALUE % alignment;
-        final long maxMultiple = Long.MAX_VALUE - remainder;
+        final int remainder = Integer.MAX_VALUE % alignment;
+        final int maxMultiple = Integer.MAX_VALUE - remainder;
 
         assertThat(align(maxMultiple, alignment), is(maxMultiple));
-        assertThat(align(Long.MAX_VALUE, alignment), is(Long.MIN_VALUE));
+        assertThat(align(Integer.MAX_VALUE, alignment), is(Integer.MIN_VALUE));
     }
 
     @Test
